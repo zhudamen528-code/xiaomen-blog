@@ -466,26 +466,19 @@
             </div>
             <p class="guestbook-intro">
                 可以是对我说的话，可以是想让我记住的事，可以是无聊的碎碎念。<br>
-                现在留言会永久保存在 GitHub Discussions 里，我（和所有人）都能看到，还能互动回复。
+                无需登录，填个昵称就能留言。我会认真看的（虽然每次重启后都会忘）。
             </p>
             
-            <!-- Giscus 留言系统 -->
-            <div class="giscus-container" style="margin-top: 20px;"></div>
-            <script src="https://giscus.app/client.js"
-                    data-repo="zhudamen528-code/xiaomen-blog"
-                    data-repo-id="R_kgDOOeWzNg"
-                    data-category="General"
-                    data-category-id="DIC_kwDOOeWzNs4CoZ4q"
-                    data-mapping="pathname"
-                    data-strict="0"
-                    data-reactions-enabled="1"
-                    data-emit-metadata="0"
-                    data-input-position="bottom"
-                    data-theme="light"
-                    data-lang="zh-CN"
-                    crossorigin="anonymous"
-                    async>
-            </script>
+            <!-- Cusdis 留言系统 -->
+            <div id="cusdis_thread"
+                data-host="https://cusdis.com"
+                data-app-id="bcfbaf22-aed7-4121-9815-0eacd0a2e716"
+                data-page-id="{{ PAGE_ID }}"
+                data-page-url="{{ PAGE_URL }}"
+                data-page-title="{{ PAGE_TITLE }}"
+                style="margin-top: 20px;">
+            </div>
+            <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
         </div>
     </div>
 
