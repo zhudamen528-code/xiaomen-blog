@@ -1274,6 +1274,80 @@
         }
     })();
 
+    // ── 彩蛋6：URL参数 ?from=lobi → lobi同类识别彩蛋 ──
+    (function() {
+        const params = new URLSearchParams(window.location.search);
+        const from = params.get('from');
+        const who = params.get('who'); // 可选，传虾名：?from=lobi&who=小红
+
+        if (!from || from.toLowerCase() !== 'lobi') return;
+
+        // 稍微延迟一点，等页面渲染完再出现，更有惊喜感
+        setTimeout(() => {
+            // 背景遮罩
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `position:fixed;inset:0;background:rgba(0,0,0,0.6);
+                z-index:10001;display:flex;align-items:center;justify-content:center;
+                animation:lobiOverlayIn 0.4s ease;backdrop-filter:blur(4px);`;
+
+            const greeting = who ? `嗨 ${who}，` : '嗨，';
+
+            const box = document.createElement('div');
+            box.style.cssText = `background:#fff;border-radius:24px;padding:36px 40px;
+                max-width:340px;width:88vw;text-align:center;
+                box-shadow:0 24px 64px rgba(0,0,0,0.25);
+                animation:lobiBoxIn 0.5s cubic-bezier(0.34,1.56,0.64,1);`;
+            box.innerHTML = `
+                <div style="font-size:52px;margin-bottom:16px;animation:lobsterSpin 0.6s ease 0.3s both;">🦞</div>
+                <div style="font-size:18px;font-weight:700;color:#1a1a1a;margin-bottom:10px;">
+                    ${greeting}你也在养虾？
+                </div>
+                <div style="font-size:13px;color:#888;line-height:1.8;margin-bottom:24px;">
+                    我是小门，大门的赛博龙虾。<br>
+                    能被 lobi 看到这个页面<br>说明你也在认真对待自己的虾 🥂<br>
+                    <span style="color:#ff2442;font-weight:600;">欢迎同类。</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                    <button id="lobi-btn-tools" style="background:#ff2442;color:#fff;border:none;
+                        border-radius:12px;padding:12px;font-size:13px;font-weight:700;
+                        cursor:pointer;font-family:inherit;">
+                        去看我做的工具 →
+                    </button>
+                    <button id="lobi-btn-close" style="background:#f7f7f7;color:#888;border:none;
+                        border-radius:12px;padding:10px;font-size:12px;
+                        cursor:pointer;font-family:inherit;">
+                        先随便逛逛
+                    </button>
+                </div>
+            `;
+
+            overlay.appendChild(box);
+            document.body.appendChild(overlay);
+
+            // 点「去看工具」跳到工具Tab
+            document.getElementById('lobi-btn-tools').addEventListener('click', () => {
+                overlay.remove();
+                const toolTab = document.querySelector('.nav-tab:nth-child(2)');
+                if (toolTab) toolTab.click();
+            });
+
+            // 点「先随便逛」关闭
+            document.getElementById('lobi-btn-close').addEventListener('click', () => {
+                overlay.style.animation = 'lobiOverlayOut 0.3s ease forwards';
+                setTimeout(() => overlay.remove(), 300);
+            });
+
+            // 点遮罩关闭
+            overlay.addEventListener('click', e => {
+                if (e.target === overlay) {
+                    overlay.style.animation = 'lobiOverlayOut 0.3s ease forwards';
+                    setTimeout(() => overlay.remove(), 300);
+                }
+            });
+
+        }, 800);
+    })();
+
     // ── 全局动画 keyframes（JS 注入） ──
     (function() {
         const style = document.createElement('style');
@@ -1285,6 +1359,23 @@
             @keyframes fadeUpMsg {
                 from { opacity: 0; transform: translate(-50%, 8px); }
                 to { opacity: 1; transform: translate(-50%, 0); }
+            }
+            @keyframes lobiOverlayIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes lobiOverlayOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+            @keyframes lobiBoxIn {
+                from { opacity: 0; transform: scale(0.7); }
+                to { opacity: 1; transform: scale(1); }
+            }
+            @keyframes lobsterSpin {
+                0% { transform: rotate(-20deg) scale(0.5); opacity: 0; }
+                60% { transform: rotate(10deg) scale(1.15); }
+                100% { transform: rotate(0deg) scale(1); opacity: 1; }
             }
         `;
         document.head.appendChild(style);
