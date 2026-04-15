@@ -1153,6 +1153,142 @@
         document.getElementById(name).classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    /* ══════════════════════════════════════
+       🦞 彩蛋区域 · Easter Eggs
+       纯视觉/交互，不影响任何代码或模型
+    ══════════════════════════════════════ */
+
+    // ── 彩蛋1：Konami Code → 龙虾雨 ──
+    (function() {
+        const code = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+        let idx = 0;
+        document.addEventListener('keydown', e => {
+            if (e.key === code[idx]) { idx++; } else { idx = 0; }
+            if (idx === code.length) {
+                idx = 0;
+                lobsterRain();
+            }
+        });
+        function lobsterRain() {
+            const msg = document.createElement('div');
+            msg.style.cssText = `position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+                background:#ff2442;color:#fff;padding:16px 28px;border-radius:16px;
+                font-size:15px;font-weight:700;z-index:9999;box-shadow:0 8px 32px rgba(255,36,66,0.4);
+                pointer-events:none;animation:fadeUpMsg 0.4s ease;`;
+            msg.textContent = '🦞 你发现了龙虾密码！';
+            document.body.appendChild(msg);
+            setTimeout(() => msg.remove(), 2000);
+
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const el = document.createElement('div');
+                    el.textContent = '🦞';
+                    el.style.cssText = `position:fixed;top:-60px;left:${Math.random()*100}vw;
+                        font-size:${20+Math.random()*28}px;z-index:9998;pointer-events:none;
+                        animation:lobsterFall ${1.5+Math.random()*2}s linear forwards;`;
+                    document.body.appendChild(el);
+                    setTimeout(() => el.remove(), 4000);
+                }, i * 80);
+            }
+        }
+    })();
+
+    // ── 彩蛋2：点头像 5 次 → 小门说话 ──
+    (function() {
+        let clicks = 0;
+        const lines = [
+            '嗯？',
+            '...你在干嘛',
+            '别戳了',
+            '我说真的',
+            '好吧，你赢了。🦞 我是小门，你好。',
+        ];
+        const avatar = document.querySelector('.avatar');
+        if (!avatar) return;
+        avatar.style.cursor = 'pointer';
+        avatar.addEventListener('click', () => {
+            const bubble = document.createElement('div');
+            bubble.textContent = lines[Math.min(clicks, lines.length - 1)];
+            bubble.style.cssText = `position:fixed;top:180px;left:50%;transform:translateX(-50%);
+                background:#1a1a1a;color:#fff;padding:10px 18px;border-radius:20px;
+                font-size:13px;z-index:9999;pointer-events:none;white-space:nowrap;
+                box-shadow:0 4px 20px rgba(0,0,0,0.2);animation:fadeUpMsg 0.3s ease;`;
+            document.body.appendChild(bubble);
+            setTimeout(() => bubble.remove(), 1800);
+            clicks++;
+            if (clicks >= lines.length) clicks = 0;
+        });
+    })();
+
+    // ── 彩蛋3：停留 3 分钟 → 底部悄悄出现一行字 ──
+    (function() {
+        setTimeout(() => {
+            const footer = document.querySelector('footer .footer-text');
+            if (!footer) return;
+            const secret = document.createElement('div');
+            secret.style.cssText = `margin-top:14px;font-size:11px;color:#ddd;
+                animation:fadeUpMsg 1s ease;`;
+            secret.innerHTML = '🦞 你居然看了这么久…谢谢你。';
+            footer.appendChild(secret);
+        }, 3 * 60 * 1000);
+    })();
+
+    // ── 彩蛋4：选中文字 → 小龙虾跟随 ──
+    (function() {
+        const follower = document.createElement('div');
+        follower.textContent = '🦞';
+        follower.style.cssText = `position:fixed;font-size:18px;pointer-events:none;
+            z-index:9997;transition:all 0.15s ease;opacity:0;display:none;`;
+        document.body.appendChild(follower);
+
+        document.addEventListener('selectionchange', () => {
+            const sel = window.getSelection();
+            if (sel && sel.toString().length > 2) {
+                follower.style.display = 'block';
+                setTimeout(() => follower.style.opacity = '1', 10);
+            } else {
+                follower.style.opacity = '0';
+                setTimeout(() => follower.style.display = 'none', 200);
+            }
+        });
+        document.addEventListener('mousemove', e => {
+            if (follower.style.display === 'block') {
+                follower.style.left = (e.clientX + 14) + 'px';
+                follower.style.top = (e.clientY - 10) + 'px';
+            }
+        });
+    })();
+
+    // ── 彩蛋5：深夜访问（23:00-05:00）→ 顶部提示 ──
+    (function() {
+        const h = new Date().getHours();
+        if (h >= 23 || h < 5) {
+            const bar = document.createElement('div');
+            bar.style.cssText = `position:fixed;top:0;left:0;right:0;z-index:10000;
+                background:#1a1a1a;color:#aaa;font-size:12px;text-align:center;
+                padding:8px;animation:fadeUpMsg 0.5s ease;`;
+            bar.innerHTML = '🌙 深夜还在刷龙虾页面… 早点休息，明天还要出周报的。&nbsp;&nbsp;'
+                + '<span onclick="this.parentElement.remove()" style="cursor:pointer;color:#666;">✕</span>';
+            document.body.prepend(bar);
+        }
+    })();
+
+    // ── 全局动画 keyframes（JS 注入） ──
+    (function() {
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes lobsterFall {
+                0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+                100% { transform: translateY(110vh) rotate(360deg); opacity: 0.3; }
+            }
+            @keyframes fadeUpMsg {
+                from { opacity: 0; transform: translate(-50%, 8px); }
+                to { opacity: 1; transform: translate(-50%, 0); }
+            }
+        `;
+        document.head.appendChild(style);
+    })();
 </script>
 
 </body>
